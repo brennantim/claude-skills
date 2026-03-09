@@ -6,8 +6,10 @@ A collection of personal skills for [Claude Code](https://docs.anthropic.com/en/
 
 | Skill | Description |
 |-------|-------------|
-| [generate-image](./generate-image/) | Generate and edit images using Google's Gemini API (Nano Banana Pro) |
+| [generate-image](./generate-image/) | Generate and edit images using Google's Gemini API |
 | [send-email](./send-email/) | Send emails via AgentMail API |
+| [recon](./recon/) | Multi-source reconnaissance: X trends, Reddit communities, web search, synthesized brief |
+| [sprite](./sprite/) | Manage Fly.io Sprites (persistent Linux VMs with Claude Code) |
 | [create-skill](./create-skill/) | Create new Claude Code skills following best practices |
 
 ## Installation
@@ -33,7 +35,6 @@ cp -r claude-skills/generate-image ~/.claude/skills/
 Requires a [Google AI Studio API key](https://aistudio.google.com/apikey).
 
 ```bash
-# Add to ~/.zshrc or ~/.bashrc
 export GEMINI_API_KEY="your-api-key"
 ```
 
@@ -42,33 +43,53 @@ export GEMINI_API_KEY="your-api-key"
 Requires an [AgentMail API key](https://agentmail.to).
 
 ```bash
-# Add to ~/.zshrc or ~/.bashrc
 export AGENTMAIL_API_KEY="your-api-key"
-
-# Or add to .env in your project root
-echo 'AGENTMAIL_API_KEY="your-api-key"' >> .env
 ```
+
+### recon
+
+X source requires an [X.ai API key](https://console.x.ai). Reddit and web sources work without keys.
+
+```bash
+# Python dependencies (one-time)
+pip install xai-sdk redditwarp
+
+# X source only — skip if you only need Reddit + web
+export XAI_API_KEY="your-api-key"
+```
+
+After installing, create a `recon-config.json` in your project root to configure domains, subreddits, X queries, and web search categories. See [recon/references/config-guide.md](./recon/references/config-guide.md) for the schema and examples.
 
 ## Usage
 
-Once installed, skills are available in Claude Code:
+Once installed, skills are available as slash commands in Claude Code:
 
 ```
-# Generate an image
 /generate-image a sunset over mountains --ratio 16:9
-
-# Send an email
 /send-email alice@example.com "Quick update" "The deploy went through."
-
-# Create a new skill
+/recon AI coding assistants
+/recon --sources reddit,web
 /create-skill
 ```
 
 Or just describe what you want and Claude will use the appropriate skill automatically.
 
-## Contributing
+## Installing a Single Skill
 
-These are personal skills I use daily. Feel free to fork and adapt for your own workflows.
+To install just one skill (e.g., `recon`):
+
+```bash
+# Clone and copy the skill
+git clone https://github.com/brennantim/claude-skills.git /tmp/claude-skills
+mkdir -p ~/.claude/skills
+cp -r /tmp/claude-skills/recon ~/.claude/skills/
+rm -rf /tmp/claude-skills
+
+# Install Python dependencies (for recon)
+pip install xai-sdk redditwarp
+```
+
+Then create a `recon-config.json` in your project root. See [recon/references/config-guide.md](./recon/references/config-guide.md) for schema and domain examples (Tolkien, AI/tech, SaaS, hobbyist communities).
 
 ## License
 
